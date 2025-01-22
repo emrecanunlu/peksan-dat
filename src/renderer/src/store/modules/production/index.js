@@ -13,6 +13,7 @@ const productionModule = {
             state.remaining = payload.remaining;
             state.toBeProduced = payload.toBeProducedItem.value;
         },
+
     },
     actions: {
         loadProductionQuantities: async ({ commit }, payload) => {
@@ -29,10 +30,17 @@ const productionModule = {
                 .then(({ data: result }) => {
                     commit('setProductionQuantities', result)
                 })
-        }
+        },
+        reset: ({ commit }) => {
+            commit('setProductionQuantities', {
+                produced: 0, remaining: 0, toBeProducedItem: {
+                    value: 0
+                }
+            })
+        },
+
     },
     getters: {
-
     }
 }
 

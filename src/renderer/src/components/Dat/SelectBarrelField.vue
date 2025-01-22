@@ -1,8 +1,6 @@
 <script setup>
 import rawMaterialService from '@/utils/services/rawMaterial'
-import { inject } from 'vue'
-import { onBeforeMount } from 'vue'
-import { ref } from 'vue'
+import { inject, onBeforeMount, ref } from 'vue'
 
 const isLoading = ref(false)
 const barrels = ref([])
@@ -48,14 +46,73 @@ onBeforeMount(() => {
 <template>
   <v-autocomplete
     v-model="state.barrel"
-    label="Varil"
+    variant="outlined"
+    color="primary"
     hide-details
-    placeholder="Lütfen varil kg seçiniz."
+    label="Varil Seçiniz"
+    placeholder="Varil kg aramak için yazın..."
     :disabled="!state.workOrder"
     :item-value="(item) => item"
     :item-title="(item) => `${item} KG`"
     :loading="isLoading"
     :items="barrels"
     @update:model-value="handleChange"
-  ></v-autocomplete>
+  >
+    <!-- Prepend Icon -->
+    <template #prepend-inner>
+      <v-icon
+        :color="state.barrel ? 'primary' : undefined"
+        icon="mdi-weight-kilogram"
+        class="mr-2"
+      />
+    </template>
+
+    <!-- Loading Progress -->
+    <template #append-inner>
+      <v-progress-circular v-if="isLoading" size="24" color="primary" indeterminate />
+    </template>
+
+    <!-- Item Template -->
+    <template #item="{ props, item }">
+      <v-list-item v-bind="props" :title="`${item.raw} KG`">
+        <template #prepend>
+          <v-avatar color="primary" variant="tonal" size="32">
+            <span class="text-caption">
+              {{ item.raw }}
+            </span>
+          </v-avatar>
+        </template>
+      </v-list-item>
+    </template>
+
+    <!-- No Data Text -->
+    <template #no-data>
+      <v-list-item>
+        <template #prepend>
+          <v-icon icon="mdi-alert" color="warning" />
+        </template>
+        <v-list-item-title>Varil bulunamadı</v-list-item-title>
+      </v-list-item>
+    </template>
+  </v-autocomplete>
 </template>
+
+<style scoped>
+:deep(.v-field__input) {
+  min-height: 56px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+:deep(.v-list-item) {
+  min-height: 56px;
+}
+
+:deep(.v-list-item__content) {
+  font-size: 1.1rem;
+}
+
+:deep(.v-field) {
+  border-radius: 8px;
+}
+</style>

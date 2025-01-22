@@ -1,22 +1,10 @@
 import axios from 'axios'
 import SnackbarHelper from '../helpers/SnackbarHelper'
 
+
 const apiService = axios.create({
-  baseURL: ''
+  baseURL: "http://192.168.2.251:6066/api"
 })
-
-apiService.interceptors.request.use(
-  async function (config) {
-    const apiUrl = await window.api.get('apiUrl')
-
-    config.baseURL = apiUrl + '/api'
-
-    return config
-  },
-  function (error) {
-    return Promise.reject(error)
-  }
-)
 
 function getErrorMessage(status) {
   switch (status) {

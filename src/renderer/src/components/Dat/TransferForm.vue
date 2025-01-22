@@ -66,37 +66,29 @@ const handleClick = () => {
 </script>
 
 <template>
-  <div class="form__fields">
-    <div class="field">
-      <select-machine-field></select-machine-field>
-    </div>
-    <div class="field">
-      <select-barrel-field></select-barrel-field>
-    </div>
-    <div v-if="!state.isColor">
+  <div class="field-area">
+    <select-machine-field />
+    <select-barrel-field />
+    <template v-if="!state.isColor">
       <v-btn
-        :disabled="!state.materials"
-        variant="elevated"
-        block
         color="indigo"
-        height="100%"
-        prepend-icon="mdi-plus"
+        append-icon="mdi-plus"
+        :disabled="!state.materials || state?.materials?.length === 0"
+        height="55px"
         @click="handleClick"
-        >KIRMA EKLE</v-btn
+        >Kırma Ekle</v-btn
       >
-    </div>
+    </template>
   </div>
 </template>
 
 <style scoped>
-.form__fields {
+.field-area {
   display: flex;
-  width: 100%;
-  justify-content: space-between;
-  column-gap: 20px;
+  gap: 1rem;
 }
 
-.field {
+.field-area > :not(:last-child) {
   flex: 1;
 }
 </style>

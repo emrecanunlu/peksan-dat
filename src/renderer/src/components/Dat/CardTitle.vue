@@ -13,13 +13,65 @@ const { workOrder } = toRefs(props)
 
 const workOrderInfo = computed(() => {
   if (!workOrder.value) {
-    return 'Lütfen iş emri bilgisi seçiniz.'
+    return {
+      message: 'Lütfen iş emri bilgisi seçiniz.',
+      isEmpty: true
+    }
   }
 
-  return `${workOrder.value.workOrder} - ${workOrder.value.stockCode} - ${workOrder.value.color} - ${workOrder.value.amount} KG`
+  return {
+    workOrder: workOrder.value.workOrder,
+    stockCode: workOrder.value.stockCode,
+    color: workOrder.value.color,
+    amount: `${workOrder.value.amount} KG`,
+    isEmpty: false
+  }
 })
 </script>
 
 <template>
-  <h1 class="text-h6 text-indigo">{{ workOrderInfo }}</h1>
+  <div class="py-4 pr-4">
+    <div v-if="workOrderInfo.isEmpty" class="d-flex align-center">
+      <v-icon icon="mdi-information" color="primary" size="24" class="mr-2"></v-icon>
+      <span class="text-primary text-h6">{{ workOrderInfo.message }}</span>
+    </div>
+
+    <div v-else>
+      <div class="d-flex flex-wrap gap-4">
+        <v-chip color="primary" size="large" variant="tonal" label>
+          <template #prepend>
+            <v-icon size="18" class="mr-2">mdi-pound</v-icon>
+          </template>
+          <span class="font-weight-medium">{{ workOrderInfo.workOrder }}</span>
+        </v-chip>
+
+        <v-chip color="primary" size="large" variant="tonal" label>
+          <template #prepend>
+            <v-icon size="18" class="mr-2">mdi-barcode</v-icon>
+          </template>
+          <span class="font-weight-medium">{{ workOrderInfo.stockCode }}</span>
+        </v-chip>
+
+        <v-chip color="primary" size="large" variant="tonal" label>
+          <template #prepend>
+            <v-icon size="18" class="mr-2">mdi-palette</v-icon>
+          </template>
+          <span class="font-weight-medium">{{ workOrderInfo.color }}</span>
+        </v-chip>
+
+        <v-chip color="primary" size="large" variant="tonal" label>
+          <template #prepend>
+            <v-icon size="18" class="mr-2">mdi-scale</v-icon>
+          </template>
+          <span class="font-weight-medium">{{ workOrderInfo.amount }}</span>
+        </v-chip>
+      </div>
+    </div>
+  </div>
 </template>
+
+<style scoped>
+.gap-4 {
+  gap: 1rem;
+}
+</style>

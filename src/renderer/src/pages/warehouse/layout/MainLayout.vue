@@ -10,9 +10,7 @@ const router = useRouter()
 const employee = store.getters['auth/_employee']
 const { currentTime, shift, clear } = useClock()
 
-const production = computed(() => store.state["production"])
-
-console.log(production)
+const production = computed(() => store.state['production'])
 
 const signOut = () => {
   store.dispatch['auth/logout']
@@ -27,34 +25,93 @@ onBeforeUnmount(() => {
 <template>
   <v-app>
     <v-layout>
-      <v-app-bar color="indigo">
-
-        <div class="d-flex">
-          <v-chip size="large" variant="elevated" color="blue" class="me-2">
-            Üretilecek: {{ production.toBeProduced }}
+      <v-app-bar color="primary" elevation="4" height="72">
+        <div class="d-flex align-center w-100 px-4">
+          <!-- Sol Taraf - Çalışan Bilgileri -->
+          <v-chip
+            class="mr-4"
+            color="primary-lighten-1"
+            size="large"
+            variant="elevated"
+            prepend-icon="mdi-account-hard-hat"
+          >
+            <span class="font-weight-medium">{{ employee.staffId }}</span>
+            <span class="mx-1">-</span>
+            <span>{{ employee.firstName }} {{ employee.lastName }}</span>
           </v-chip>
 
-          <v-chip size="large" variant="elevated" color="green" class="me-2">
-            Üretilen: {{ production.produced }}
+          <v-chip
+            color="primary-lighten-1"
+            size="large"
+            variant="elevated"
+            prepend-icon="mdi-clock-outline"
+          >
+            <span class="font-weight-medium">{{ shift }}. Vardiya</span>
           </v-chip>
 
-          <v-chip size="large" variant="elevated" color="red">
-            Kalan: {{ production.remaining }}
+          <v-divider class="mx-6" vertical thickness="2"></v-divider>
+
+          <!-- Orta - Üretim Bilgileri -->
+          <div class="d-flex align-center">
+            <v-chip
+              class="mr-4"
+              color="info"
+              size="large"
+              variant="elevated"
+              prepend-icon="mdi-clipboard-list-outline"
+            >
+              <span class="font-weight-medium">Üretilecek:</span>
+              <span class="ml-2">{{ production.toBeProduced }}</span>
+            </v-chip>
+
+            <v-chip
+              class="mr-4"
+              color="success"
+              size="large"
+              variant="elevated"
+              prepend-icon="mdi-check-circle-outline"
+            >
+              <span class="font-weight-medium">Üretilen:</span>
+              <span class="ml-2">{{ production.produced }}</span>
+            </v-chip>
+
+            <v-chip
+              color="error"
+              size="large"
+              variant="elevated"
+              prepend-icon="mdi-alert-circle-outline"
+            >
+              <span class="font-weight-medium">Kalan:</span>
+              <span class="ml-2">{{ production.remaining }}</span>
+            </v-chip>
+          </div>
+
+          <v-spacer></v-spacer>
+
+          <!-- Sağ Taraf - Saat ve Çıkış -->
+          <v-chip
+            class="mr-4"
+            color="primary-lighten-1"
+            size="large"
+            variant="elevated"
+            prepend-icon="mdi-clock"
+          >
+            {{ currentTime }}
           </v-chip>
+
+          <v-btn
+            color="white"
+            variant="flat"
+            size="large"
+            prepend-icon="mdi-logout"
+            class="font-weight-medium"
+            @click="signOut"
+          >
+            <span class="text-primary">Çıkış</span>
+          </v-btn>
         </div>
-
-        <template #prepend>
-          <h1 class="text-h6 pl-3">
-            {{
-              `${shift}. Vardiya | ${employee.staffId} - ${employee.firstName} ${employee.lastName}`
-            }}
-          </h1>
-        </template>
-        <template #append>
-          <h1 class="text-h6 pr-2">{{ currentTime }}</h1>
-          <v-btn icon="mdi-logout" @click="signOut"></v-btn>
-        </template>
       </v-app-bar>
+
       <v-main class="overflow-hidden">
         <router-view></router-view>
       </v-main>
@@ -62,4 +119,18 @@ onBeforeUnmount(() => {
   </v-app>
 </template>
 
-<style></style>
+<style scoped>
+:deep(.v-chip) {
+  font-size: 1rem;
+  height: 44px !important;
+}
+
+:deep(.v-btn) {
+  height: 44px;
+  min-width: 110px;
+}
+
+:deep(.v-divider) {
+  opacity: 0.3;
+}
+</style>

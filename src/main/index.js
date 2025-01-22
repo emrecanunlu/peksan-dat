@@ -56,7 +56,7 @@ function createWindow() {
       printWindow.webContents.print({
         silent: store.get('silent'),
         deviceName: store.get('deviceName'),
-        printBackground: true,
+        printBackground: true
       })
     })
   })

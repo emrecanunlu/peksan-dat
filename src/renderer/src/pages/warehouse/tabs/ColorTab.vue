@@ -4,11 +4,11 @@ import MaterialList from '@/components/Dat/MaterialList.vue'
 import CardTitle from '@/components/Dat/CardTitle.vue'
 import Decimal from 'decimal.js'
 import rawMaterialService from '@/utils/services/rawMaterial'
-import store from '@/store'
 import useClock from '@/hooks/useClock'
-import { onBeforeUnmount, reactive, computed, provide } from 'vue'
+import { useStore } from 'vuex'
+import { onBeforeMount, onBeforeUnmount, reactive, computed, provide } from 'vue'
 import SnackbarHelper from '@/utils/helpers/SnackbarHelper'
-
+import WorkOrderList from '@/components/Dat/WorkOrderList.vue'
 const state = reactive({
   barrel: null,
   machine: null,
@@ -18,6 +18,8 @@ const state = reactive({
   tmp: null,
   isLoading: false
 })
+
+const store = useStore()
 
 const employee = store.getters['auth/_employee']
 const { shift, clear } = useClock()
@@ -104,4 +106,6 @@ onBeforeUnmount(() => {
       >
     </v-card-actions>
   </v-card>
+
+  <work-order-list @on-row-click="state.machine = String($event.depoKodu)" />
 </template>
