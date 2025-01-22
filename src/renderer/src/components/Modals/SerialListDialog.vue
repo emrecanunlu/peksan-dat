@@ -47,8 +47,8 @@ const loadSerialList = async (searchTerm = '') => {
   rawMaterialService
     .getSeries(rawCode, { page: 1, offset: 25, search: searchTerm })
     .then((response) => {
-      serialList.value = response.data.data.map((element, index) => ({
-        id: index,
+      serialList.value = response.data.data.map((element) => ({
+        id: element.serialNo + ',' + element.color + ',' + element.lotNo,
         ...element
       }))
     })

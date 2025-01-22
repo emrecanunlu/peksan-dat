@@ -47,6 +47,7 @@ function createWindow() {
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
     mainWindow.maximize()
+    mainWindow.webContents.zoomFactor = 0.9
 
     ipcMain.on('print-label', async (e, data) => {
 

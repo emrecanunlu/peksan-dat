@@ -1,11 +1,12 @@
 <script setup>
-import { ref, onBeforeMount } from 'vue'
+import { ref, onBeforeMount, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
 import RawMaterialTab from '@/pages/warehouse/tabs/RawMaterialTab.vue'
 import ColorTab from '@/pages/warehouse/tabs/ColorTab.vue'
 
 const tab = ref(0)
 const store = useStore()
+const intervalId = ref(null)
 
 const tabs = [
   {
@@ -26,8 +27,21 @@ const handleTabChange = (value) => {
   store.commit('workorder/setRemainingList', [])
 }
 
+const startAutoRefresh = () => {
+  intervalId.value = setInterval(() => {
+    store.dispatch('workorder/loadRemainingList', Boolean(tab.value))
+  }, 5 * 60 * 1000) // 5 dakika
+}
+
 onBeforeMount(() => {
   store.dispatch('workorder/loadRemainingList', false)
+  startAutoRefresh()
+})
+
+onBeforeUnmount(() => {
+  if (intervalId.value) {
+    clearInterval(intervalId.value)
+  }
 })
 </script>
 
