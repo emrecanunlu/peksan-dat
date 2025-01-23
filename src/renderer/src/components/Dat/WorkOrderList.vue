@@ -36,50 +36,42 @@ const handleRowClick = async (row) => {
 </script>
 
 <template>
-  <v-card
-    title="İş Emri Listesi"
-    subtitle="Kalan Hammadde Miktarları"
-    :loading="loading"
-    :disabled="loading"
-    class="mt-4"
-  >
-    <v-card-text>
-      <v-table hover fixed-header>
-        <thead>
-          <tr>
-            <th>İş Emri No</th>
-            <th class="text-center">Toplam Miktar</th>
-            <th class="text-center">Harcanan Miktar</th>
-            <th class="text-center">Kalan Miktar</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in remainingList" :key="item.id" @click="handleRowClick(item)">
-            <td class="text-body-1">
-              {{ item.workOrder }}
-            </td>
-            <td class="text-center">
-              <v-chip color="primary" variant="tonal" class="font-weight-medium">
-                <v-icon start icon="mdi-scale" size="16"></v-icon>
-                {{ item.totalSummary.totalAmount.toFixed(2) }} KG
-              </v-chip>
-            </td>
-            <td class="text-center">
-              <v-chip color="success" variant="tonal" class="font-weight-medium">
-                <v-icon start icon="mdi-check-circle" size="16"></v-icon>
-                {{ item.totalSummary.totalSpent.toFixed(2) }} KG
-              </v-chip>
-            </td>
-            <td class="text-center">
-              <v-chip color="error" variant="tonal" class="font-weight-medium">
-                <v-icon start icon="mdi-alert-circle" size="16"></v-icon>
-                {{ item.totalSummary.totalRemaining.toFixed(2) }} KG
-              </v-chip>
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
-    </v-card-text>
+  <v-card :loading="loading" :disabled="loading" :elevation="0" :rounded="0" height="350px">
+    <v-table class="h-100" hover fixed-header>
+      <thead>
+        <tr>
+          <th>İş Emri No</th>
+          <th class="text-center">Toplam Miktar</th>
+          <th class="text-center">Harcanan Miktar</th>
+          <th class="text-center">Kalan Miktar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in remainingList" :key="item.id" @click="handleRowClick(item)">
+          <td class="text-body-1">
+            {{ item.workOrder }}
+          </td>
+          <td class="text-center">
+            <v-chip color="primary" variant="tonal" class="font-weight-medium">
+              <v-icon start icon="mdi-scale" size="16"></v-icon>
+              {{ item.totalSummary.totalAmount.toFixed(2) }} KG
+            </v-chip>
+          </td>
+          <td class="text-center">
+            <v-chip color="success" variant="tonal" class="font-weight-medium">
+              <v-icon start icon="mdi-check-circle" size="16"></v-icon>
+              {{ item.totalSummary.totalSpent.toFixed(2) }} KG
+            </v-chip>
+          </td>
+          <td class="text-center">
+            <v-chip color="error" variant="tonal" class="font-weight-medium">
+              <v-icon start icon="mdi-alert-circle" size="16"></v-icon>
+              {{ item.totalSummary.totalRemaining.toFixed(2) }} KG
+            </v-chip>
+          </td>
+        </tr>
+      </tbody>
+    </v-table>
   </v-card>
 </template>
 

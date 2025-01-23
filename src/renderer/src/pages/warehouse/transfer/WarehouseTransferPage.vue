@@ -2,6 +2,7 @@
 import { ref, onBeforeMount, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
 import RawMaterialTab from '@/pages/warehouse/tabs/RawMaterialTab.vue'
+import RawMaterialRequestTab from '@/pages/warehouse/tabs/RawMaterialRequestTab.vue'
 import ColorTab from '@/pages/warehouse/tabs/ColorTab.vue'
 
 const tab = ref(0)
@@ -18,13 +19,16 @@ const tabs = [
     title: 'Boya',
     icon: 'mdi-palette',
     tab: ColorTab
+  },
+  {
+    title: 'Hammadde Talep',
+    icon: 'mdi-package-variant',
+    tab: RawMaterialRequestTab
   }
 ]
 
 const handleTabChange = (value) => {
-  store.dispatch('production/reset')
   store.dispatch('workorder/loadRemainingList', Boolean(value))
-  store.commit('workorder/setRemainingList', [])
 }
 
 const startAutoRefresh = () => {
@@ -72,9 +76,7 @@ onBeforeUnmount(() => {
       <!-- İçerik -->
       <v-window v-model="tab">
         <v-window-item v-for="(item, index) in tabs" :key="index" :value="index">
-          <v-card-text class="pa-6">
-            <component :is="item.tab" :key="`tab-${tab}-${index}`"></component>
-          </v-card-text>
+          <component :is="item.tab" :key="index"></component>
         </v-window-item>
       </v-window>
     </v-card>
@@ -91,6 +93,11 @@ onBeforeUnmount(() => {
 
 :deep(.v-tab--selected) {
   font-weight: 600;
+}
+
+:deep(.v-window-item) {
+  height: calc(100vh - 180px);
+  overflow-y: hidden;
 }
 
 .border-b {

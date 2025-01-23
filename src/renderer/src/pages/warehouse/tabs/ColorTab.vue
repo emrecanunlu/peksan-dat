@@ -6,7 +6,7 @@ import Decimal from 'decimal.js'
 import rawMaterialService from '@/utils/services/rawMaterial'
 import useClock from '@/hooks/useClock'
 import { useStore } from 'vuex'
-import { onBeforeMount, onBeforeUnmount, reactive, computed, provide } from 'vue'
+import { onBeforeUnmount, reactive, computed, provide } from 'vue'
 import SnackbarHelper from '@/utils/helpers/SnackbarHelper'
 import WorkOrderList from '@/components/Dat/WorkOrderList.vue'
 const state = reactive({
@@ -85,27 +85,31 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <v-card :disabled="state.isLoading" :loading="state.isLoading">
-    <template #prepend>
-      <card-title :work-order="state.workOrder"></card-title>
-    </template>
-    <v-card-text>
-      <transfer-form> </transfer-form>
-      <v-divider class="my-4"></v-divider>
-      <material-list v-if="state.materials"></material-list>
-    </v-card-text>
-    <v-card-actions v-if="state.materials" class="d-flex justify-end">
-      <v-btn
-        :disabled="!isCompleted"
-        color="indigo"
-        size="large"
-        variant="elevated"
-        prepend-icon="mdi-transfer"
-        @click="handleClick"
-        >Transfer</v-btn
-      >
-    </v-card-actions>
-  </v-card>
+  <v-container fluid class="d-flex flex-column h-100 pa-0 justify-space-between">
+    <v-card
+      :disabled="state.isLoading"
+      :loading="state.isLoading"
+      class="h-100 flex-fill d-flex flex-column"
+    >
+      <v-card-text class="h-100 flex-fill d-flex flex-column overflow-y-hidden">
+        <card-title :work-order="state.workOrder" />
+        <transfer-form />
+        <v-divider class="my-4" />
+        <material-list />
+      </v-card-text>
+      <v-card-actions v-if="state.materials" class="d-flex justify-end">
+        <v-btn
+          :disabled="!isCompleted"
+          color="indigo"
+          size="large"
+          variant="elevated"
+          prepend-icon="mdi-transfer"
+          @click="handleClick"
+          >Transfer</v-btn
+        >
+      </v-card-actions>
+    </v-card>
 
-  <work-order-list @on-row-click="state.machine = String($event.depoKodu)" />
+    <work-order-list @on-row-click="state.machine = String($event.depoKodu)" />
+  </v-container>
 </template>

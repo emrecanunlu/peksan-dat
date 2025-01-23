@@ -30,7 +30,7 @@ const workOrderInfo = computed(() => {
 </script>
 
 <template>
-  <div class="py-4 pr-4">
+  <div class="py-4 pr-4 mb-2">
     <div v-if="workOrderInfo.isEmpty" class="d-flex align-center">
       <v-icon icon="mdi-information" color="primary" size="24" class="mr-2"></v-icon>
       <span class="text-primary text-h6">{{ workOrderInfo.message }}</span>
@@ -57,13 +57,6 @@ const workOrderInfo = computed(() => {
             <v-icon size="18" class="mr-2">mdi-palette</v-icon>
           </template>
           <span class="font-weight-medium">{{ workOrderInfo.color }}</span>
-        </v-chip>
-
-        <v-chip color="primary" size="large" variant="tonal" label>
-          <template #prepend>
-            <v-icon size="18" class="mr-2">mdi-scale</v-icon>
-          </template>
-          <span class="font-weight-medium">{{ workOrderInfo.amount }}</span>
         </v-chip>
       </div>
     </div>

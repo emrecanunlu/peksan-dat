@@ -31,7 +31,7 @@ apiService.interceptors.response.use(
     let errorMessage = 'Hata meydana geldi!'
 
     if (err?.response) {
-      errorMessage = err.response.data?.message ?? getErrorMessage(err.response.status)
+      errorMessage = err.response.data?.Message ?? getErrorMessage(err.response.status)
     } else if (err?.request) {
       errorMessage = getErrorMessage(err.request.status)
     } else {

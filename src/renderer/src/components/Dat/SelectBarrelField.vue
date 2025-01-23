@@ -39,6 +39,7 @@ const handleChange = async (barrelKg) => {
 }
 
 onBeforeMount(() => {
+  console.log('mounted')
   getBarrels()
 })
 </script>

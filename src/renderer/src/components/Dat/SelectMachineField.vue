@@ -33,7 +33,6 @@ const handleChange = (val) => {
       if (workOrders.length > 0) {
         state.workOrder = workOrders[0]
       } else {
-        SnackbarHelper.showError('İş emri bulunamadı!')
         state.workOrder = null
       }
 

@@ -112,25 +112,16 @@ onBeforeUnmount(() => {
         </div>
       </v-app-bar>
 
-      <v-main class="overflow-hidden">
+      <v-main>
         <router-view></router-view>
       </v-main>
     </v-layout>
   </v-app>
 </template>
 
-<style scoped>
-:deep(.v-chip) {
-  font-size: 1rem;
-  height: 44px !important;
-}
-
-:deep(.v-btn) {
-  height: 44px;
-  min-width: 110px;
-}
-
-:deep(.v-divider) {
-  opacity: 0.3;
+<style>
+html,
+body {
+  overflow: hidden;
 }
 </style>

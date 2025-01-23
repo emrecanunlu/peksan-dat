@@ -50,7 +50,7 @@ const handleRowClick = async (material) => {
 </script>
 
 <template>
-  <v-table hover>
+  <v-table class="h-100 flex-fill overflow-y-auto" fixed-header hover>
     <thead>
       <tr>
         <th>Ürün Grubu</th>
@@ -63,7 +63,7 @@ const handleRowClick = async (material) => {
     </thead>
     <tbody>
       <tr
-        v-for="(item, index) in materials"
+        v-for="(item, index) in materials || []"
         :key="index"
         :class="{
           'bg-green-darken-1': isSucceeded(item).value
