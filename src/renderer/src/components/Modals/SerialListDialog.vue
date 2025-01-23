@@ -16,7 +16,7 @@ const props = defineProps({
 const emit = defineEmits(['update:open'])
 
 const selected = ref(null)
-const serialList = ref([])
+const serialList = ref(null)
 const loading = ref(false)
 const search = ref('')
 
@@ -77,19 +77,7 @@ onBeforeMount(() => {
         </v-toolbar-items>
       </v-toolbar>
 
-      <template v-if="loading">
-        <div class="d-flex justify-center align-center">
-          <v-progress-circular
-            indeterminate
-            color="indigo"
-            size="64"
-            width="7"
-            class="ma-16"
-          ></v-progress-circular>
-        </div>
-      </template>
-
-      <template v-else>
+      <template v-if="serialList">
         <v-card-text>
           <add-serial-form
             v-if="selected"
@@ -112,32 +100,59 @@ onBeforeMount(() => {
           ></v-text-field>
 
           <v-divider v-if="selected" class="my-4"></v-divider>
-          <v-table hover fixed-header height="600">
-            <thead>
-              <tr>
-                <th>Seri Numarası</th>
-                <th>Renk</th>
-                <th>Lot No</th>
-                <th>Miktar</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item, index) in serialList"
-                :key="index"
-                :class="{
-                  'bg-indigo': selected?.id === item.id,
-                  'bg-green-darken-1': isAdded(item.id).value
-                }"
-                @click.stop="handleRowClick(item)"
-              >
-                <td>{{ item.serialNo }}</td>
-                <td>{{ item?.color ?? '-' }}</td>
-                <td>{{ item?.lotNo ?? '-' }}</td>
-                <td>{{ item.amount }}</td>
-              </tr>
-            </tbody>
-          </v-table>
+
+          <template v-if="loading">
+            <div class="d-flex justify-center align-center py-16">
+              <v-progress-circular
+                indeterminate
+                color="indigo"
+                size="64"
+                width="7"
+              ></v-progress-circular>
+            </div>
+          </template>
+
+          <template v-else>
+            <v-table hover fixed-header height="600">
+              <thead>
+                <tr>
+                  <th>Seri Numarası</th>
+                  <th>Renk</th>
+                  <th>Lot No</th>
+                  <th>Miktar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(item, index) in serialList"
+                  :key="index"
+                  :class="{
+                    'bg-indigo': selected?.id === item.id,
+                    'bg-green-darken-1': isAdded(item.id).value
+                  }"
+                  @click.stop="handleRowClick(item)"
+                >
+                  <td>{{ item.serialNo }}</td>
+                  <td>{{ item?.color ?? '-' }}</td>
+                  <td>{{ item?.lotNo ?? '-' }}</td>
+                  <td>{{ item.amount }}</td>
+                </tr>
+              </tbody>
+            </v-table>
+          </template>
+        </v-card-text>
+      </template>
+
+      <template v-else>
+        <v-card-text>
+          <div class="d-flex justify-center align-center py-16">
+            <v-progress-circular
+              indeterminate
+              color="indigo"
+              size="64"
+              width="7"
+            ></v-progress-circular>
+          </div>
         </v-card-text>
       </template>
     </v-card>
