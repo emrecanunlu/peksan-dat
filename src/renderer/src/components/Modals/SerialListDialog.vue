@@ -37,8 +37,6 @@ const clearSearch = () => {
   loadSerialList()
 }
 
-console.log(props.material)
-
 const isAdded = (id) => computed(() => props.material.series.find((e) => e.id === id))
 
 const loadSerialList = async (searchTerm = '') => {
