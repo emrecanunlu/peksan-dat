@@ -3,14 +3,16 @@ import { ref, onBeforeMount } from 'vue'
 import StockList from '@/components/Dat/StockList.vue'
 import RequestedStockList from '@/components/Dat/RequestedStockList.vue'
 import barrelSerialService from '@/utils/services/barrelSerial'
+import SnackbarHelper from '@/utils/helpers/SnackbarHelper'
 
 const colorStockList = ref([])
 const rawMaterialStockList = ref([])
-
 const requestStockList = ref([])
 
+const loading = ref(false)
+
 const handleRowClick = (item, type) => {
-  requestStockList.value = [{ ...item, amount: 0, type }, ...requestStockList.value]
+  requestStockList.value = [{ ...item, amount: null, type }, ...requestStockList.value]
 }
 
 const handleRemove = (item) => {
@@ -23,11 +25,38 @@ const handleAmountUpdate = (amount, item) => {
   )
 }
 
+const handleSubmit = () => {
+  loading.value = true
+
+  const data = requestStockList.value.map((item) => ({
+    stokKodu: item.code,
+    miktar: parseFloat(item.amount)
+  }))
+
+  barrelSerialService
+    .requestStock(data)
+    .then(() => {
+      SnackbarHelper.showSuccess('Stok talebi başarıyla oluşturuldu')
+      requestStockList.value = []
+
+      getStockList()
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
 const getStockList = () => {
-  barrelSerialService.getRequestStockCode().then((result) => {
-    colorStockList.value = result.data.paints
-    rawMaterialStockList.value = result.data.rawMaterials
-  })
+  loading.value = true
+  barrelSerialService
+    .getRequestStockCode()
+    .then((result) => {
+      colorStockList.value = result.data.paints
+      rawMaterialStockList.value = result.data.rawMaterials
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 onBeforeMount(() => {
@@ -36,7 +65,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <v-card class="h-100 d-flex flex-column pa-2">
+  <v-card class="h-100 d-flex flex-column pa-2" :loading="loading" :disabled="loading">
     <v-card-text class="h-100 overflow-y-hidden pa-0 d-flex flex-column ga-2">
       <div class="h-50 d-flex ga-2">
         <stock-list
@@ -70,6 +99,7 @@ onBeforeMount(() => {
         variant="elevated"
         color="primary"
         :disabled="requestStockList.some((item) => item.amount <= 0)"
+        @click.stop="handleSubmit"
       >
         <span class="text-capitalize">Talep Et</span>
       </v-btn>

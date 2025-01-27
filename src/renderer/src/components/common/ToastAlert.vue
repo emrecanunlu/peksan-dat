@@ -22,6 +22,10 @@ const getAlertTitle = computed(() => {
       return 'Hata'
     case 'success':
       return 'Başarılı'
+    case 'warning':
+      return 'Uyarı'
+    default:
+      return 'Bilgi'
   }
 })
 </script>

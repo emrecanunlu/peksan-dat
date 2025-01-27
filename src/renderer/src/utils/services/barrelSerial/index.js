@@ -1,12 +1,14 @@
 import apiService from '../ApiService'
 
-const getAll = async (isColor = false) => apiService.get('/BarrelSerial/GetGroupedRawMaterialBarrelRemainings', { params: { isColor } })
+const getAll = (isColor = false) => apiService.get('/BarrelSerial/GetGroupedRawMaterialBarrelRemainings', { params: { isColor } })
 
-const getRequestStockCode = async () => apiService.get('/BarrelSerial/RequestStockCode')
+const getRequestStockCode = () => apiService.get('/BarrelSerial/RequestStockCode')
+const requestStock = (data) => apiService.post('/BarrelSerial/CreateRPStokSevk', data)
 
 const barrelSerialService = {
     getAll,
-    getRequestStockCode
+    getRequestStockCode,
+    requestStock
 }
 
 export default barrelSerialService

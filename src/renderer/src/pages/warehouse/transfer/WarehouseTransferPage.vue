@@ -38,7 +38,6 @@ const startAutoRefresh = () => {
 }
 
 onBeforeMount(() => {
-  store.dispatch('workorder/loadRemainingList', false)
   startAutoRefresh()
 })
 
@@ -76,7 +75,7 @@ onBeforeUnmount(() => {
       <!-- İçerik -->
       <v-window v-model="tab">
         <v-window-item v-for="(item, index) in tabs" :key="index" :value="index">
-          <component :is="item.tab" :key="index"></component>
+          <component :is="item.tab" v-if="tab === index" :key="index"></component>
         </v-window-item>
       </v-window>
     </v-card>
