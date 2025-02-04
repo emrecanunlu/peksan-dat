@@ -4,7 +4,7 @@ import StockList from '@/components/Dat/StockList.vue'
 import RequestedStockList from '@/components/Dat/RequestedStockList.vue'
 import barrelSerialService from '@/utils/services/barrelSerial'
 import SnackbarHelper from '@/utils/helpers/SnackbarHelper'
-
+import oneSignalService from '@/utils/services/onesignal'
 const colorStockList = ref([])
 const rawMaterialStockList = ref([])
 const requestStockList = ref([])
@@ -35,7 +35,15 @@ const handleSubmit = () => {
 
   barrelSerialService
     .requestStock(data)
-    .then(() => {
+    .then(async () => {
+      oneSignalService.sendPushNotification(
+        requestStockList.value.map((item) => ({
+          stockCode: item.code,
+          stockName: item.name,
+          amount: parseFloat(item.amount) || 0
+        }))
+      )
+
       SnackbarHelper.showSuccess('Stok talebi başarıyla oluşturuldu')
       requestStockList.value = []
 
