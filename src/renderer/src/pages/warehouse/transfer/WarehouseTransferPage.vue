@@ -38,6 +38,8 @@ const startAutoRefresh = () => {
 }
 
 onBeforeMount(() => {
+  handleTabChange(0)
+
   startAutoRefresh()
 })
 
