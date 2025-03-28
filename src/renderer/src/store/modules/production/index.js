@@ -6,6 +6,8 @@ const productionModule = {
         toBeProduced: 0,
         produced: 0,
         remaining: 0,
+        isLabelVerification: false,
+        serialNumber: ''
     }),
     mutations: {
         setProductionQuantities: (state, payload) => {
@@ -13,7 +15,12 @@ const productionModule = {
             state.remaining = payload.remaining;
             state.toBeProduced = payload.toBeProducedItem.value;
         },
-
+        setIsLabelVerification: (state, payload) => {
+            state.isLabelVerification = payload
+        },
+        setSerialNumber: (state, payload) => {
+            state.serialNumber = payload
+        }
     },
     actions: {
         loadProductionQuantities: async ({ commit }, payload) => {
@@ -38,9 +45,22 @@ const productionModule = {
                 }
             })
         },
-
+        activeLabelVerification: ({ commit }, { serialNumber }) => {
+            commit('setIsLabelVerification', true)
+            commit('setSerialNumber', serialNumber)
+        },
+        closeLabelVerification: ({ commit }) => {
+            commit('setIsLabelVerification', false)
+            commit('setSerialNumber', '')
+        }
     },
     getters: {
+        isLabelVerification: (state) => {
+            return state.isLabelVerification
+        },
+        serialNumber: (state) => {
+            return state.serialNumber
+        }
     }
 }
 

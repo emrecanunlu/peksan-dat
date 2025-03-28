@@ -7,6 +7,9 @@ const apiService = axios.create({
 })
 
 function getErrorMessage(status) {
+
+  console.log(status)
+
   switch (status) {
     case 400:
       return `${status} - Geçersiz istek! Lütfen verilerinizi kontrol edin.`

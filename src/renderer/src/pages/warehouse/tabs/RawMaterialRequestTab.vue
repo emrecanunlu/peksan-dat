@@ -1,14 +1,13 @@
 <script setup>
-import { ref, onBeforeMount } from 'vue'
-import StockList from '@/components/Dat/StockList.vue'
+import { ref } from 'vue'
+import RawMaterialStockList from '@/components/Dat/RawMaterialStockList.vue'
+import ColorStockList from '@/components/Dat/ColorStockList.vue'
 import RequestedStockList from '@/components/Dat/RequestedStockList.vue'
 import barrelSerialService from '@/utils/services/barrelSerial'
 import SnackbarHelper from '@/utils/helpers/SnackbarHelper'
 import oneSignalService from '@/utils/services/onesignal'
-const colorStockList = ref([])
-const rawMaterialStockList = ref([])
-const requestStockList = ref([])
 
+const requestStockList = ref([])
 const loading = ref(false)
 
 const handleRowClick = (item, type) => {
@@ -46,49 +45,24 @@ const handleSubmit = () => {
 
       SnackbarHelper.showSuccess('Stok talebi başarıyla oluşturuldu')
       requestStockList.value = []
-
-      getStockList()
     })
     .finally(() => {
       loading.value = false
     })
 }
-
-const getStockList = () => {
-  loading.value = true
-  barrelSerialService
-    .getRequestStockCode()
-    .then((result) => {
-      colorStockList.value = result.data.paints
-      rawMaterialStockList.value = result.data.rawMaterials
-    })
-    .finally(() => {
-      loading.value = false
-    })
-}
-
-onBeforeMount(() => {
-  getStockList()
-})
 </script>
 
 <template>
   <v-card class="h-100 d-flex flex-column pa-2" :loading="loading" :disabled="loading">
     <v-card-text class="h-100 overflow-y-hidden pa-0 d-flex flex-column ga-2">
       <div class="h-50 d-flex ga-2">
-        <stock-list
-          :list="rawMaterialStockList"
+        <raw-material-stock-list
           :request-stock-list="requestStockList.map((item) => item.code)"
-          icon="mdi-barrel"
-          title="Hammadde Stok Listesi"
-          @row-click="handleRowClick($event, 'Hammadde')"
+          @row-click="(item) => handleRowClick(item, 'Hammadde')"
         />
-        <stock-list
-          :list="colorStockList"
+        <color-stock-list
           :request-stock-list="requestStockList.map((item) => item.code)"
-          icon="mdi-palette"
-          title="Boya Stok Listesi"
-          @row-click="handleRowClick($event, 'Boya')"
+          @row-click="(item) => handleRowClick(item, 'Boya')"
         />
       </div>
       <div class="h-50">

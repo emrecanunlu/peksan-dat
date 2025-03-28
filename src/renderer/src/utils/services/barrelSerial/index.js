@@ -4,11 +4,13 @@ const getAll = (isColor = false) => apiService.get('/BarrelSerial/GetGroupedRawM
 
 const getRequestStockCode = () => apiService.get('/BarrelSerial/RequestStockCode')
 const requestStock = (data) => apiService.post('/BarrelSerial/CreateRPStokSevk', data)
+const requestStockList = (params) => apiService.get('/BarrelSerial/RequestStockV2', { params })
 
 const barrelSerialService = {
     getAll,
     getRequestStockCode,
-    requestStock
+    requestStock,
+    requestStockList
 }
 
 export default barrelSerialService

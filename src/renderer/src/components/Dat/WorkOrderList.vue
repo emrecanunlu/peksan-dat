@@ -40,6 +40,7 @@ const handleRowClick = async (row) => {
     <v-table class="h-100" hover fixed-header>
       <thead>
         <tr>
+          <th>Makine</th>
           <th>İş Emri No</th>
           <th class="text-center">Toplam Miktar</th>
           <th class="text-center">Harcanan Miktar</th>
@@ -48,6 +49,12 @@ const handleRowClick = async (row) => {
       </thead>
       <tbody>
         <tr v-for="item in remainingList" :key="item.id" @click="handleRowClick(item)">
+          <td class="text-body-1">
+            <v-chip color="primary" variant="tonal" class="font-weight-bold">
+              <v-icon start icon="mdi-robot-industrial" size="16"></v-icon>
+              {{ item.depoKodu }}
+            </v-chip>
+          </td>
           <td class="text-body-1">
             {{ item.workOrder }}
           </td>
