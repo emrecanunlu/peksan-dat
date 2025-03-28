@@ -60,6 +60,10 @@ function createWindow() {
         printBackground: true
       })
     })
+
+    ipcMain.on('print-last-label', async (e, data) => {
+      printWindow.webContents.send('print-last-label', data)
+    })
   })
 
   printWindow.on('ready-to-show', () => { })

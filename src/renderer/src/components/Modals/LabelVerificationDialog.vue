@@ -1,12 +1,12 @@
 <script setup>
 import { useStore } from 'vuex'
-import { computed, ref } from 'vue'
-
+import { computed, ref, watch, onUnmounted } from 'vue'
+import SnackbarHelper from '@/utils/helpers/SnackbarHelper'
 const store = useStore()
 
 const serialNumber = computed(() => store.state.production.serialNumber)
 
-defineProps({
+const props = defineProps({
   modelValue: {
     type: Boolean,
     required: true
@@ -14,11 +14,44 @@ defineProps({
 })
 defineEmits(['update:modelValue'])
 
-const inputRef = ref(null)
+const timer = ref(0)
+const interval = ref(null)
+const lastKeyPressed = ref(new Date())
 
-const onSubmit = () => {
-  inputRef.value.reset()
+const handleKeydown = (event) => {
+  const current = new Date()
+  const timeDiff = current.getTime() - lastKeyPressed.value.getTime()
+
+  lastKeyPressed.value = current
+
+  if (event.key === 'Enter') {
+    if (timeDiff > 100) {
+      SnackbarHelper.showError('Lütfen tekrar deneyiniz!')
+      return
+    }
+  }
 }
+
+const handlePrint = () => {
+  if (interval.value) {
+    clearInterval(interval.value)
+  }
+
+  timer.value = 10
+  interval.value = setInterval(() => {
+    if (timer.value > 0) {
+      timer.value--
+    } else {
+      clearInterval(interval.value)
+    }
+  }, 1000)
+}
+
+onUnmounted(() => {
+  if (interval.value) {
+    clearInterval(interval.value)
+  }
+})
 </script>
 
 <template>
@@ -28,34 +61,47 @@ const onSubmit = () => {
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
   >
+    <v-toolbar color="primary">
+      <v-toolbar-title>Etiket Doğrulama - ({{ serialNumber }})</v-toolbar-title>
+    </v-toolbar>
     <v-card>
-      <v-toolbar color="primary">
-        <v-toolbar-title>Etiket Doğrulama - ({{ serialNumber }})</v-toolbar-title>
-      </v-toolbar>
       <v-card-text>
         <v-row no-gutters>
           <v-col cols="12">
-            <h5 class="text-h6">Etiket Doğrulama</h5>
-            <p class="text-body-1 text-grey-darken-2">
-              Etiket doğrulama için, etiketin üzerindeki barkodu tarayın.
-            </p>
+            <div class="d-flex align-center">
+              <v-avatar size="48" color="primary">
+                <v-icon>mdi-barcode-scan</v-icon>
+              </v-avatar>
+
+              <div class="ms-4">
+                <h5 class="text-h6">Etiket Doğrulama</h5>
+                <p class="text-body-1 text-grey-darken-2">
+                  Etiket doğrulama için, etiketin üzerindeki barkodu tarayın.
+                </p>
+              </div>
+            </div>
           </v-col>
-          <v-col cols="12" class="mt-6 mb-2">
-            <form @submit.prevent="onSubmit">
-              <v-text-field
-                ref="inputRef"
-                label="Barkod"
-                variant="outlined"
-                prepend-inner-icon="mdi-barcode"
-                autofocus
-                @keydown="onKeyDown"
-              />
-            </form>
+          <v-col cols="12" class="mt-8 mb-2">
+            <v-text-field
+              label="Seri Numarası"
+              placeholder="Seri Numarası Giriniz"
+              variant="outlined"
+              prepend-inner-icon="mdi-barcode"
+              autofocus
+              @keydown="handleKeydown"
+            />
           </v-col>
           <v-col cols="12" class="d-flex justify-end">
-            <v-btn color="primary" class="ml-auto" prepend-icon="mdi-printer" size="large"
-              >Yeniden Yazdır</v-btn
+            <v-btn
+              color="primary"
+              class="ml-auto"
+              size="large"
+              :disabled="timer > 0"
+              prepend-icon="mdi-printer"
+              @click.stop="handlePrint"
             >
+              Yeniden Yazdır {{ timer > 0 ? `(${timer} saniye)` : '' }}
+            </v-btn>
           </v-col>
         </v-row>
       </v-card-text>
