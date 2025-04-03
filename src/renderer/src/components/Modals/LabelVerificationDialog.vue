@@ -1,12 +1,12 @@
 <script setup>
 import { useStore } from 'vuex'
-import { computed, ref, watch, onUnmounted } from 'vue'
+import { computed, ref, onUnmounted } from 'vue'
 import SnackbarHelper from '@/utils/helpers/SnackbarHelper'
 const store = useStore()
 
 const serialNumber = computed(() => store.state.production.serialNumber)
 
-const props = defineProps({
+defineProps({
   modelValue: {
     type: Boolean,
     required: true
@@ -17,22 +17,9 @@ defineEmits(['update:modelValue'])
 const timer = ref(0)
 const interval = ref(null)
 const lastKeyPressed = ref(new Date())
+const loading = ref(false)
 
-const handleKeydown = (event) => {
-  const current = new Date()
-  const timeDiff = current.getTime() - lastKeyPressed.value.getTime()
-
-  lastKeyPressed.value = current
-
-  if (event.key === 'Enter') {
-    if (timeDiff > 100) {
-      SnackbarHelper.showError('Lütfen tekrar deneyiniz!')
-      return
-    }
-  }
-}
-
-const handlePrint = () => {
+const startTimer = () => {
   if (interval.value) {
     clearInterval(interval.value)
   }
@@ -47,6 +34,26 @@ const handlePrint = () => {
   }, 1000)
 }
 
+const handleKeydown = (event) => {
+  const current = new Date()
+  const timeDiff = current.getTime() - lastKeyPressed.value.getTime()
+
+  lastKeyPressed.value = current
+
+  if (event.key === 'Enter') {
+    console.log('ENTER', timeDiff)
+
+    if (timeDiff > 50) {
+      SnackbarHelper.showError('Lütfen tekrar deneyiniz!')
+      return
+    }
+  }
+}
+
+const handlePrint = () => {
+  startTimer()
+}
+
 onUnmounted(() => {
   if (interval.value) {
     clearInterval(interval.value)
@@ -56,7 +63,7 @@ onUnmounted(() => {
 
 <template>
   <v-dialog
-    max-width="65%"
+    max-width="75%"
     persistent
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
@@ -64,7 +71,7 @@ onUnmounted(() => {
     <v-toolbar color="primary">
       <v-toolbar-title>Etiket Doğrulama - ({{ serialNumber }})</v-toolbar-title>
     </v-toolbar>
-    <v-card>
+    <v-card :loading="loading" :disabled="loading">
       <v-card-text>
         <v-row no-gutters>
           <v-col cols="12">
