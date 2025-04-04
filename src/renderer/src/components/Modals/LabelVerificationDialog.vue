@@ -75,7 +75,9 @@ const handlePrint = () => {
   labelService
     .getLabel(datNo.value)
     .then((res) => {
-      console.log(res.data.data)
+      const { data: label } = res.data
+
+      window.electron.ipcRenderer.send('print-label', label)
     })
     .finally(() => {
       loading.value = false
@@ -91,7 +93,7 @@ onUnmounted(() => {
 
 <template>
   <v-dialog
-    max-width="75%"
+    max-width="80%"
     persistent
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"

@@ -2,7 +2,7 @@
 import { onBeforeMount, onBeforeUnmount, ref } from 'vue'
 import '../../assets/reset.css'
 import { format } from 'date-fns'
-
+import VueBarcode from '@chenfengyuan/vue-barcode'
 const slip = ref(null)
 
 onBeforeMount(() => {
@@ -53,6 +53,12 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </div>
+      <div class="barcode-container">
+        <vue-barcode
+          :value="slip.datNo"
+          :options="{ width: 2, height: 60, displayValue: false, margin: 0 }"
+        />
+      </div>
       <div class="material-table">
         <table>
           <thead>
@@ -80,6 +86,8 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Libre+Barcode+39&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -219,5 +227,10 @@ th:nth-child(5) {
 td:nth-child(5) {
   text-align: right;
   width: 10%;
+}
+
+.barcode-container {
+  display: flex;
+  margin-top: 16px;
 }
 </style>
