@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import barrelSerialService from '@/utils/services/barrelSerial'
 
-const emit = defineEmits(['rowClick'])
+defineEmits(['rowClick'])
 
 const props = defineProps({
   requestStockList: {

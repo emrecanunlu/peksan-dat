@@ -2,12 +2,18 @@
 import { useStore } from 'vuex'
 import { computed, ref, onUnmounted } from 'vue'
 import SnackbarHelper from '@/utils/helpers/SnackbarHelper'
+import labelService from '@/utils/services/label'
+
 const store = useStore()
 
-const serialNumber = computed(() => store.state.production.serialNumber)
+const datNo = computed(() => store.state.production.datNo)
 
 defineProps({
   modelValue: {
+    type: Boolean,
+    required: true
+  },
+  isColor: {
     type: Boolean,
     required: true
   }
@@ -17,6 +23,7 @@ defineEmits(['update:modelValue'])
 const timer = ref(0)
 const interval = ref(null)
 const lastKeyPressed = ref(new Date())
+const input = ref('')
 const loading = ref(false)
 
 const startTimer = () => {
@@ -36,22 +43,43 @@ const startTimer = () => {
 
 const handleKeydown = (event) => {
   const current = new Date()
+  const value = input.value
   const timeDiff = current.getTime() - lastKeyPressed.value.getTime()
 
   lastKeyPressed.value = current
 
   if (event.key === 'Enter') {
-    console.log('ENTER', timeDiff)
+    input.value = ''
 
     if (timeDiff > 50) {
       SnackbarHelper.showError('Lütfen tekrar deneyiniz!')
       return
     }
+
+    loading.value = true
+    labelService
+      .verifyLabel(value)
+      .then(() => {
+        store.dispatch('production/closeLabelVerification')
+      })
+      .finally(() => {
+        loading.value = false
+      })
   }
 }
 
 const handlePrint = () => {
   startTimer()
+
+  loading.value = true
+  labelService
+    .getLabel(datNo.value)
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 onUnmounted(() => {
@@ -69,7 +97,7 @@ onUnmounted(() => {
     @update:model-value="$emit('update:modelValue', $event)"
   >
     <v-toolbar color="primary">
-      <v-toolbar-title>Etiket Doğrulama - ({{ serialNumber }})</v-toolbar-title>
+      <v-toolbar-title>Etiket Doğrulama - ({{ datNo }})</v-toolbar-title>
     </v-toolbar>
     <v-card :loading="loading" :disabled="loading">
       <v-card-text>
@@ -90,8 +118,9 @@ onUnmounted(() => {
           </v-col>
           <v-col cols="12" class="mt-8 mb-2">
             <v-text-field
-              label="Seri Numarası"
-              placeholder="Seri Numarası Giriniz"
+              v-model="input"
+              label="Dat No"
+              placeholder="Dat No Giriniz"
               variant="outlined"
               prepend-inner-icon="mdi-barcode"
               autofocus

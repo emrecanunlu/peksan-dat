@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onBeforeMount, onBeforeUnmount } from 'vue'
+import { ref, onBeforeMount, onBeforeUnmount, computed } from 'vue'
 import { useStore } from 'vuex'
 import RawMaterialTab from '@/pages/warehouse/tabs/RawMaterialTab.vue'
 import RawMaterialRequestTab from '@/pages/warehouse/tabs/RawMaterialRequestTab.vue'
 import ColorTab from '@/pages/warehouse/tabs/ColorTab.vue'
+import LabelVerificationDialog from '@/components/Modals/LabelVerificationDialog.vue'
 
 const tab = ref(0)
 const store = useStore()
@@ -26,6 +27,9 @@ const tabs = [
     tab: RawMaterialRequestTab
   }
 ]
+
+const isLabelVerification = computed(() => store.getters['production/isLabelVerification'])
+const isColor = computed(() => tab.value === 1)
 
 const handleTabChange = (value) => {
   store.dispatch('workorder/loadRemainingList', Boolean(value))
@@ -82,6 +86,12 @@ onBeforeUnmount(() => {
       </v-window>
     </v-card>
   </v-container>
+
+  <label-verification-dialog
+    :model-value="isLabelVerification"
+    :is-color="isColor"
+    @update:model-value="store.dispatch('production/closeLabelVerification')"
+  ></label-verification-dialog>
 </template>
 
 <style scoped>

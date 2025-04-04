@@ -2,9 +2,8 @@
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import useClock from '@/hooks/useClock'
-import { computed, onBeforeUnmount } from 'vue'
-import LabelVerificationDialog from '@/components/Modals/LabelVerificationDialog.vue'
-
+import { computed, onBeforeMount, onBeforeUnmount } from 'vue'
+import labelService from '@/utils/services/label'
 const store = useStore()
 const router = useRouter()
 
@@ -12,12 +11,25 @@ const employee = store.getters['auth/_employee']
 const { currentTime, shift, clear } = useClock()
 
 const production = computed(() => store.state['production'])
-const isLabelVerification = computed(() => store.state['production'].isLabelVerification)
+
+const checkUnverifiedLabel = async () => {
+  labelService.getUnverifiedLabel().then((res) => {
+    const { datNo } = res?.data?.data ?? {}
+
+    if (datNo) {
+      store.dispatch('production/activeLabelVerification', { datNo })
+    }
+  })
+}
 
 const signOut = () => {
   store.dispatch['auth/logout']
   router.push({ path: '/auth/login' })
 }
+
+onBeforeMount(() => {
+  checkUnverifiedLabel()
+})
 
 onBeforeUnmount(() => {
   clear()
@@ -115,21 +127,9 @@ onBeforeUnmount(() => {
       </v-app-bar>
 
       <v-main>
-        <v-btn
-          @click.stop="
-            store.dispatch('production/activeLabelVerification', { serialNumber: '1234567890' })
-          "
-        >
-          Active
-        </v-btn>
         <router-view></router-view>
       </v-main>
     </v-layout>
-
-    <label-verification-dialog
-      :model-value="isLabelVerification"
-      @update:model-value="store.dispatch('production/closeLabelVerification')"
-    ></label-verification-dialog>
   </v-app>
 </template>
 

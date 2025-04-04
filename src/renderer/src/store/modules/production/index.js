@@ -7,7 +7,7 @@ const productionModule = {
         produced: 0,
         remaining: 0,
         isLabelVerification: false,
-        serialNumber: ''
+        datNo: ""
     }),
     mutations: {
         setProductionQuantities: (state, payload) => {
@@ -18,8 +18,8 @@ const productionModule = {
         setIsLabelVerification: (state, payload) => {
             state.isLabelVerification = payload
         },
-        setSerialNumber: (state, payload) => {
-            state.serialNumber = payload
+        setDatNo: (state, payload) => {
+            state.datNo = payload
         }
     },
     actions: {
@@ -45,21 +45,21 @@ const productionModule = {
                 }
             })
         },
-        activeLabelVerification: ({ commit }, { serialNumber }) => {
+        activeLabelVerification: ({ commit }, { datNo }) => {
             commit('setIsLabelVerification', true)
-            commit('setSerialNumber', serialNumber)
+            commit('setDatNo', datNo)
         },
         closeLabelVerification: ({ commit }) => {
             commit('setIsLabelVerification', false)
-            commit('setSerialNumber', '')
+            commit('setDatNo', '')
         }
     },
     getters: {
         isLabelVerification: (state) => {
             return state.isLabelVerification
         },
-        serialNumber: (state) => {
-            return state.serialNumber
+        datNo: (state) => {
+            return state.datNo
         }
     }
 }
