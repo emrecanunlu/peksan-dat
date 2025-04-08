@@ -71,6 +71,10 @@ const handleClick = () => {
 
       window.electron.ipcRenderer.send('print-label', result.data)
       SnackbarHelper.showSuccess('Transfer başarılı')
+
+      store.dispatch('production/activeLabelVerification', {
+        datNo: result.data.datNo
+      })
     })
     .finally(() => {
       state.isLoading = false
